@@ -20,14 +20,18 @@ app.use(cors({
   // 照理來說, 我們要去判斷東西是哪裡來的
   origin (origin, callback) {
     // 開發環境, 允許
-    if (process.env.ALLOW_CORS === 'true') {
-      callback(null, true)
-      // 非開發環境, 但是從github過來, 允許
-    } else if (origin.includes('github')) {
-      callback(null, true)
+    if (origin === undefined) {
+      callback(null,true)
     } else {
-      // 沒有從DEV 或 github來的話, 拒絕(要寫錯誤)
-      callback(new Error('Not allowed'), false)
+      if (process.env.ALLOW_CORS === 'true') {
+        callback(null, true)
+        // 非開發環境, 但是從github過來, 允許
+      } else if (origin.includes('github')) {
+        callback(null, true)
+      } else {
+        // 沒有從DEV 或 github來的話, 拒絕(要寫錯誤)
+        callback(new Error('Not allowed'), false)
+      }
     }
   },
   // 允許認證資訊
